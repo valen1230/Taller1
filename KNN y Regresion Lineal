@@ -1,0 +1,44 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from sklearn.neighbors import KNeighborsClassifier
+
+
+datos = pd.read_csv('./cars_data.csv', header=0)
+marca = list(datos['marca'])
+kilometraje = list(datos['kilometraje'])
+modelo = list(datos['modelo'])
+
+data = {'Modelo': modelo,
+        'KM': kilometraje,
+        'Marca': marca}
+punto_nuevo = {'Modelo': [2007],
+               'KM': [10000]}
+df = pd.DataFrame(data)
+punto_nuevo = pd.DataFrame(punto_nuevo)
+# sns.scatterplot(df['Masa'], df['Altura'], hue=df['sex'])
+ax = plt.axes()
+ax.scatter(df.loc[df['Marca'] == 'renault', 'Modelo'],
+           df.loc[df['Marca'] == 'renault', 'KM'],
+           c="red",
+           label="renault")
+ax.scatter(df.loc[df['Marca'] == 'mazda', 'Modelo'],
+           df.loc[df['Marca'] == 'mazda', 'KM'],
+           c="blue",
+           label="mazda")
+ax.scatter(punto_nuevo['Modelo'],
+           punto_nuevo['KM'],
+           c="black",
+           s=100
+           )
+plt.xlabel("modelo")
+plt.ylabel("KM")
+ax.legend()
+plt.show()
+
+knn = KNeighborsClassifier(n_neighbors=3)
+X = df[['Modelo', 'KM']]
+y = df[['Marca']]
+knn.fit(X, y)
+prediccion = knn.predict(punto_nuevo)
+print(prediccion)
